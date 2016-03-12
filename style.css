@@ -1,0 +1,10 @@
+.ups{
+	margin-left:-6px;
+}
+.upsCont {
+    white-space:nowrap;
+} 
+
+.upsCont > div {
+    margin-top:-4px;
+}
