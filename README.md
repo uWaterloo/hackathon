@@ -1,0 +1,2 @@
+# hackathon
+The hackathon widget
