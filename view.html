@@ -1,0 +1,296 @@
+<script type="text/ng-template" id="loading.html">
+    <widget-row>
+        <widget-cell>
+            <div class="pDetails">
+                Loading..
+            </div>
+        </widget-cell>
+    </widget-row>
+</script>
+<script type="text/ng-template" id="ideas.html">
+    <widget-row ng-if="isCollapsed.value" ng-click="isCollapsed.value=!isCollapsed.value"><widget-cell><div class="btn btn-primary">Submit an idea</div></widget-cell></widget-row>
+    <div ng-if="!isCollapsed.value">
+        <widget-row><widget-cell><h2>Submit an idea</h2></widget-cell></widget-row>
+        <widget-row>
+            <widget-cell style="position:relative;">
+                <div style="">
+                    <div ng-if="submitting.value">
+                        <div style="position: absolute;z-index: 9;left: calc(50% - 45px);top: 44px; text-align: center;">
+                            <img src="/Content/Images/128x128Preloader.GIF" style="width: 50px;"><div class="pDetails">Submitting..</div>
+                        </div>
+                        <div class="" style="background:white;top: 0;right: 0;left: 0;bottom: 0;position: absolute;"></div>
+                    </div>
+                    <div ng-if="submitted.value" style="text-align:center; position: absolute;z-index: 9; background:white;top: 0;right: 0;left: 0;bottom: 0; padding-top:27px;">
+                        <div class="pDetails" style="margin-top:2rem;">Thank you for your submission! <br /><a ng-click="submitted.value=false" href="">Submit another one.</a></div>
+                    </div>
+                </div>
+
+                <form ng-submit="hackathonFactory.submitIdea()">
+                    <textarea rows="4" class="form-control" placeholder="Enter an idea" ng-model="newIdea.value" style="resize: none;"></textarea>
+                    <div ng-class="{'red':newIdea.value.length>500,'pDetails':newIdea.value.length<=500}">{{newIdea.value.length}}/500</div>
+                    <input ng-disabled="newIdea.value.length>500" class="btn btn-primary pull-right" type="submit" style="margin-top:-21px;" />
+                    <input type="button" value="Cancel" class="btn btn-warning pull-right" style="margin-top:-21px;" ng-click="isCollapsed.value=true" />
+                </form>
+            </widget-cell>
+        </widget-row>
+    </div>
+
+    <widget-row><widget-cell><h2>Ideas</h2></widget-cell></widget-row>
+
+    <div ng-if="ideas.value.length==0">
+        <widget-row><widget-cell><div class="pDetails">No ideas yet. Come back soon!</div></widget-cell></widget-row>
+    </div>
+    <div ng-if="ideas.value.length>0">
+        <widget-list list="idea in ideas.value | orderBy: ['upCount == null', '-upCount']" show-items="8">
+            <widget-row>
+                <widget-cell class="upsCont">
+                    <div>
+                        <widget-icon class="pointer" ng-class="{'transparent':!idea.voted}" name="up-bold" ng-click="up(idea)"></widget-icon>
+                        <span class="accent ups">{{idea.upCount?idea.upCount:0}}</span>
+                    </div>
+                </widget-cell>
+                <widget-cell fill clickable ng-click="showDetailsView(idea)">
+                    <widget-cell fill>
+                        <div class="itemName pull-left">{{idea.title}}</div>
+                    </widget-cell>
+                    <widget-cell>
+                        <widget-icon name="angle-right"></widget-icon>
+                    </widget-cell>
+                </widget-cell>
+            </widget-row>
+
+        </widget-list>
+    </div>
+</script>
+<script type="text/ng-template" id="main.html">
+    <uib-tabset ng-if="user.Roles.indexOf('spring2016hackathonattendee')>-1">
+        <uib-tab heading="Ideas"><div ng-include="'ideas.html'"></div></uib-tab>
+        <uib-tab heading="Getting Started">
+            <div style="max-width:700px;">
+                <wr><wc><h2>Getting Started</h2></wc></wr>
+
+                <wr><wc>Thanks for registering for the student portal hackathon! We're excited to have you join us and your peers to develop widgets for the coolest Waterloo tool.</wc></wr>
+
+                <wr>
+                    <wc>
+                        <div class="itemName">Saturday, October 17</div>
+                        <div class="itemName">Student Life Centre (SLC), Multi-purpose room (MPR)</div>
+                        <div class="itemName">10:00am-7:00pm (<a href="https://uwaterloo.ca/student-portal/hackathon" target="_blank">View full schedule</a>)</div>
+                        <div class="itemName">Lunch and dinner will be provided.</div>
+                    </wc>
+                </wr>
+
+                <wr><wc><h3>What do I need to do before the Hackathon?</h3></wc></wr>
+
+                <wr>
+                    <wc>
+                        <ul>
+                            <li>
+                                You will be given access to the Student Development Kit (SDK) inside the portal Saturday morning. In order to use the SDK during the Hackathon, you will need to accept the SDK user agreement. Please review it <a href="https://uwaterloo.ca/student-portal/university-waterloo-portal-student-development-kit-sdk" target="_blank">here</a> before Saturday morning. Note: you will need to agree to the agreement within the SDK on Saturday in order to participate in the Hackathon. Any questions can be sent to <a href="mailto:student.portal@uwaterloo.ca">student.portal@uwaterloo.ca</a>.
+                            </li>
+                        </ul>
+                    </wc>
+                </wr>
+
+                <wr><wc><h4>What do I need to know?</h4></wc></wr>
+
+                <wr>
+                    <wc>
+                        <ul>
+                            <li>
+                                Widgets will be programmed in <a href="http://www.w3schools.com/html/default.asp" target="_blank">HTML</a>, <a href="http://www.w3schools.com/js/" target="_blank">JavaScript</a>, <a href="http://www.w3schools.com/css/" target="_blank">CSS</a>, and <a href="http://www.w3schools.com/sql/" target="_blank">SQL</a>. Understanding these languages will be beneficial (although only HTML and JavaScript are required). An understanding of SQL and databases is required if you are looking to build a widget that stores or utilizes persistent data
+                            </li>
+                            <li>
+                                Instead of using a 3rd party IDE, Portal has a built in environment called Portal SDK in which all widget development is done. The documentation for it can be found <a href="/Index#/SDKDocument" target="_blank">here</a>.
+                            </li>
+                            <li>
+                                The widgets themselves will be using the <a href="https://angularjs.org/" target="_blank">AngularJS</a> framework
+                                <ul>
+                                    <li>Although understanding how this framework operates will make things easier, it is not required since we will provide examples to work from</li>
+                                    <li>If interested, you can research: controllers, filters and directives</li>
+                                    <li>A good starting tutorial for AngularJS could be found <a href="https://docs.angularjs.org/tutorial" target="_blank">here</a></li>
+                                </ul>
+                            </li>
+                            <li>The use of external JavaScript libraries is not restricted, but will require approval before use</li>
+                            <li>Access to external APIs is not restricted, but will also require approval before use</li>
+                            <li>You need to be familiar with the <a href="https://uwportal.uwaterloo.ca/" target="_blank">student portal</a>. Spend some time looking at the features that are already there and the different elements of the widgets.</li>
+                        </ul>
+                    </wc>
+                </wr>
+
+                <wr><wc>We will have experienced developers from our student portal team onsite to help you every step of the way. More information regarding the specific use of the development environment will be provided on Saturday.</wc></wr>
+
+                <!--<wr><wc><h4>What do I bring?</h4></wc></wr>
+
+                <wr>
+                    <wc>
+                        <ul>
+                            <li>
+                                Bring your own device and charger. You can work in the SLC MPR or anywhere in the SLC.
+                            </li>
+                        </ul>
+                    </wc>
+                </wr>-->
+
+                <wr><wc><h4>Can we work individually or with a team?</h4></wc></wr>
+
+                <wr>
+                    <wc>
+                        <ul>
+                            <li>
+                                You can work by yourself or in teams. You can create your own teams heading into the day or we can help facilitate team formation upon registration based on the type of widget(s) everyone is considering.
+                            </li>
+                        </ul>
+                    </wc>
+                </wr>
+
+                <wr><wc><h4>Preparing for your pitch<br />Your team will have 4-5 mins to pitch your idea</h4></wc></wr>
+
+                <wr>
+                    <wc>
+                        <ul>
+                            <li>
+                                Introduce yourself/your team members
+                            </li>
+                            <li>Present your widget and its components</li>
+                            <li>Identify the problem and how your widget is the solution</li>
+                            <li>Show us a demo of the user experience and the output you expect </li>
+                        </ul>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        There will be a people's choice award winner selected by all the Hackathon participants and a judge's choice award winner. Judge's will be members of the student portal team, from Information and Systems Technology and the Student Success Office.
+                        <br />If you have any questions, please feel free to reach out.
+                    </wc>
+                </wr>
+            </div>
+        </uib-tab>
+        <uib-tab heading="FAQ">
+            <wr><wc><h2>FAQ</h2></wc></wr>
+
+            <div style="max-width:700px;">
+                <wr><wc><div class="itemName">For detailed instructions, see <a href="/Index#/SDKDocument">documentation</a></div></wc></wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">When and where is the hackathon?</div></div>
+                        <div class="pDetails">
+                            Come to Science Teaching Complex (STC), Room 0060 at 10:00 on Saturday, March 11th. For more details, visit <a href="https://uwaterloo.ca/student-portal/student-opportunities/hackathon">official hackathon page</a>.
+                        </div>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">How to start a new widget project?</div></div>
+                        <div class="pDetails">Press the "Develop" menu button followed by a large "+" button</div>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">I can't access portal SDK. How come?</div></div>
+                        <div class="pDetails">Not everyone has access to the SDK. If you have signed up for the SDK but don't see the "Develop" option in the main menu, let us know and we'll give you access.</div>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">Can I have some examples?</div></div>
+                        <div class="pDetails">You can find sample projects in the Portal SDK. Click the "Develop" menu button and you will see a list of projects available in read-only mode.</div>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">Where can I get some data?</div></div>
+                        <div class="pDetails">
+                            We recommend starting from mock-up data. Just create JSON structures in your javascript file and build your views using that.
+                            You can use our Open Data API for more data feeds.
+                        </div>
+                    </wc>
+                </wr>
+
+                <wr>
+                    <wc>
+                        <div class="pDetails"><div class="fieldName">How do I use the Open Data API?</div></div>
+                        <div class="pDetails">
+                            Refer to the <a href="https://github.com/uWaterloo/api-documentation#accessing-the-api" target="_blank">Open Data API</a> website.
+                        </div>
+                    </wc>
+                </wr>
+            </div>
+
+
+
+
+        </uib-tab>
+        <uib-tab heading="Submit Feedback">
+            <wr><wc><h2>Submit Feedback</h2></wc></wr>
+            <wr><wc><div class="pDetails">Let us know if you find any bugs, thought something was confusing or have any other comments.</div></wc></wr>
+
+
+            <widget-row>
+                <widget-cell style="position:relative;">
+                    <div style="">
+                        <div ng-if="submittingFeedback.value">
+                            <div style="position: absolute;z-index: 9;left: calc(50% - 45px);top: 44px; text-align: center;">
+                                <img src="/Content/Images/128x128Preloader.GIF" style="width: 50px;"><div class="pDetails">Submitting..</div>
+                            </div>
+                            <div class="" style="background:white;top: 0;right: 0;left: 0;bottom: 0;position: absolute;"></div>
+                        </div>
+                        <div ng-if="submittedFeedback.value" style="text-align:center; position: absolute;z-index: 9; background:white;top: 0;right: 0;left: 0;bottom: 0; padding-top:27px; border: 1px solid #ccc;">
+                            <div class="pDetails" style="margin-top:2rem;">Thank you for your submission! <br /><a ng-click="submittedFeedback.value=false" href="">Submit another one.</a></div>
+                        </div>
+                    </div>
+
+                    <form ng-submit="hackathonFactory.submitFeedback()">
+
+                        <div class="form-group">
+                            <label for="hackcats">Select Category: </label>
+                            <select id="hackcats" class="form-control" ng-model="feedbackCategory.value">
+                                <option value="blaa">SDK feature request</option>
+                                <option value="blaa">SDK improvement</option>
+                                <option value="bugs">Bug</option>
+                                <option value="documentation">Documentation</option>
+                                <option value="blaa">Hackathon organization</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <textarea rows="4" class="form-control" placeholder="Enter feedback" ng-model="newFeedback.value" style="resize: none;"></textarea>
+                        <div ng-class="{'red':newFeedback.value.length>1000,'pDetails':newFeedback.value.length<=1000}">{{newFeedback.value.length}}/1000</div>
+                        <input ng-disabled="newFeedback.value.length>1000" class="btn btn-primary pull-right" type="submit" style="margin-top:-21px;" />
+                        <input type="button" value="Cancel" class="btn btn-warning pull-right" style="margin-top:-21px;" ng-click="isFeedbackCollapsed.value=true" />
+                    </form>
+                </widget-cell>
+            </widget-row>
+
+        </uib-tab>
+    </uib-tabset>
+
+    <div ng-if="user.Roles.indexOf('spring2016hackathonattendee')==-1" ng-include="'ideas.html'"></div>
+
+</script>
+<script type="text/ng-template" id="details.html">
+    <widget-list-controls prev-click="prevItem" next-click="nextItem" original-item="idea.value" prev-text="Previous Idea"
+                          next-text="Next Idea"></widget-list-controls>
+    <widget-row>
+        <widget-cell class="upsCont">
+            <div>
+                <widget-icon class="pointer" ng-class="{'transparent':!idea.value.voted}" name="up-bold" ng-click="up(idea.value)"></widget-icon>
+                <span class="accent ups">{{idea.value.upCount?idea.value.upCount:0}}</span>
+            </div>
+        </widget-cell>
+        <widget-cell fill>
+            <h2>{{idea.value.title}}</h2>
+        </widget-cell>
+    </widget-row>
+    <widget-row>
+        <widget-cell>
+            <div class="pHighlight">{{idea.value.description}}</div>
+        </widget-cell>
+    </widget-row>
+</script>
